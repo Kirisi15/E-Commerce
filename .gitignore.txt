@@ -1,0 +1,16 @@
+# Node modules
+backend/node_modules/
+frontend/node_modules/
+
+# Uploads or generated files
+backend/upload/
+
+# Logs
+*.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
