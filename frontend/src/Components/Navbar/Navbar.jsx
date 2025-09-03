@@ -6,11 +6,15 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ShopContext } from '../../Context/ShopContext'
 import nav_dropdown from '../Assets/Frontend_Assets/nav_dropdown.png'
+import { useAuth0 } from "@auth0/auth0-react";
+
 
 const Navbar = () => {
 
     const [menu, setMenu] = useState("shop");
     const {getTotalCartItems} = useContext(ShopContext);
+    const { loginWithRedirect, logout, isAuthenticated, user } = useAuth0();
+
     const menuRef = useRef();
 
     const dropdown_toggle = (e) =>{
@@ -33,17 +37,42 @@ const Navbar = () => {
             <li onClick={()=>{setMenu("kids")}}><Link style={{ textDecoration: 'none'}}to='/kids'>Kids</Link>{menu==="kids"?<hr />:<></>}</li>
         </ul>
         <div className="nav-login-cart">
-            {localStorage.getItem('auth-token')
-            ?<button onClick={()=>{localStorage.removeItem('auth-token');window.location.replace('/')}}>Logout</button>
-            :<Link to='/login'><button>Login</button></Link>
-            }
+            {isAuthenticated ? (
+                <>
+                    <span style={{ marginRight: "10px" }}>Hi, {user.name}</span>
+                    {isAuthenticated && (
+                            <img 
+                                src={user.picture} 
+                                alt="profile" 
+                                style={{ width: 30, height: 30, borderRadius: "50%", marginLeft: "10px" }}
+                            />
+                            )}
+
+                    <button 
+                    onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}
+                    >
+                    Logout
+                    </button>
+                </>
+                ) : localStorage.getItem('auth-token') ? (
+                <button 
+                    onClick={() => {
+                    localStorage.removeItem('auth-token');
+                    window.location.replace('/');
+                    }}
+                >
+                    Logout
+                </button>
+                ) : (
+                <button onClick={() => loginWithRedirect()}>Login</button>
+                )}
+
             
             <Link to='/cart'>
                 <img src={cart_icon} alt="" />
             </Link>
                 <div className="nav-cart-count">{getTotalCartItems()}</div>
         </div>
-
     </div>
   )
 }

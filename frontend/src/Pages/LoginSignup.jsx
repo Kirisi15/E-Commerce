@@ -1,9 +1,13 @@
 import React, { useState } from 'react'
 import './CSS/LoginSignup.css'
+import { useAuth0 } from "@auth0/auth0-react";
+
 
 const LoginSignup = () => {
 
   const [state,setState] = useState("Login");
+  const { loginWithRedirect, isAuthenticated, user, logout } = useAuth0();
+
   const [formData, setFormData] = useState({
     username:"",
     password:"",
@@ -71,6 +75,21 @@ const LoginSignup = () => {
         ?<p className="loginsignup-login">Already have an account? <span onClick={()=>{setState("Login")}}>Login here</span></p>
         :<p className="loginsignup-login">Create an account? <span onClick={()=>{setState("Sign Up")}}>Click here</span></p>
       }
+      <button
+        style={{
+          marginTop: "20px",
+          backgroundColor: "#4285F4",
+          color: "#fff",
+          border: "none",
+          padding: "10px 20px",
+          borderRadius: "5px",
+          cursor: "pointer"
+        }}
+        onClick={() => loginWithRedirect()}
+      >
+        Continue with Google
+      </button>
+
         
         <div className="loginsignup-agree">
           <input type="checkbox" name='' id='' />
